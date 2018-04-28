@@ -124,7 +124,7 @@ public class UI extends Application {
 		{
 			public void handle(ActionEvent event){
 				
-				//uID = Controller.getInstance().login(userField.getText(), passField.getText())
+				//uID = Controller.getController().login(userField.getText(), passField.getText())
 				if( uID == 0){
 					loginStatus.setFill(Color.DARKBLUE);
 					loginStatus.setText("user name/ password compination is not correct!");
@@ -189,7 +189,7 @@ public class UI extends Application {
 				}
 				else if(passFieldR.getText().equals(passConfField.getText())){
 					String registerOutput = "Nothing yet";
-						//Controller.getInstance().register(userFieldR.getText(), passFieldR.getText(), emailField.getText());
+						//Controller.getController().register(userFieldR.getText(), passFieldR.getText(), emailField.getText());
 					if(registerOutput.equals("done")){
 						loginStatus.setFill(Color.DARKBLUE);
 						loginStatus.setText("Registration complete, Now login");
@@ -334,7 +334,7 @@ public class UI extends Application {
 				}
 				else{
 					addStatus.setFill(Color.DARKBLUE);
-					if(/*Controler.addList(propField.getText(), propDiscField.getText(), propLocField.getText(),
+					if(/*Controler.getController().addList(propField.getText(), propDiscField.getText(), propLocField.getText(),
 							propOfferTypeField.getSelectedToggle().getUserData().toString(), propNRoomsField.getText(),
 							propNBathsField.getText(), propAreaField.getText(),
 							propOfferTypeField.getSelectedToggle().getUserData().toString(), propOfferPriceField.getText(), list)*/true)
