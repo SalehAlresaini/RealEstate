@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import facade.Controller;
+//import facade.Controller;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -13,7 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
+import kfx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -129,7 +129,7 @@ public class UI extends Application {
 			public void handle(ActionEvent event){
 				
 				try {
-					uID = Controller.getController().login(userField.getText(), passField.getText());
+					uID = 0;//Controller.getController().login(userField.getText(), passField.getText());
 				} catch (Exception e) {
 					uID =0;
 				}
@@ -198,7 +198,7 @@ public class UI extends Application {
 				else if(passFieldR.getText().equals(passConfField.getText())){
 					String registerOutput;
 					try {
-						registerOutput = Controller.getController().register(userFieldR.getText(), passFieldR.getText(), emailField.getText());
+						registerOutput = "";//Controller.getController().register(userFieldR.getText(), passFieldR.getText(), emailField.getText());
 					} catch (Exception e) {
 						registerOutput = "Error: couldn't register";
 					}
@@ -348,10 +348,10 @@ public class UI extends Application {
 					addStatus.setFill(Color.DARKBLUE);
 					String addListOut;
 					try {
-						addListOut = Controller.getController().addList(propField.getText(), propDiscField.getText(), propLocField.getText(),
+						addListOut = "";/*Controller.getController().addList(propField.getText(), propDiscField.getText(), propLocField.getText(),
 								propOfferTypeField.getSelectedToggle().getUserData().toString(), Integer.parseInt(propNRoomsField.getText()),
 								Integer.parseInt(propNBathsField.getText()), Integer.parseInt(propAreaField.getText()),
-								propOfferTypeField.getSelectedToggle().getUserData().toString(), Double.parseDouble(propOfferPriceField.getText()), picList);
+								propOfferTypeField.getSelectedToggle().getUserData().toString(), Double.parseDouble(propOfferPriceField.getText()), picList);*/
 					} catch (Exception  e) {
 						addListOut= "Error: couldn't add your List";
 					}

@@ -23,13 +23,7 @@ public class Database {
             String connStr = "jdbc:mysql://" + server;
             conn = DriverManager.getConnection(connStr, uName, pass);
             s = conn.createStatement();
-        	/*MysqlDataSource dataSource = new MysqlDataSource();
-        	dataSource.setUser("root");
-        	dataSource.setPassword("root");
-        	dataSource.setServerName("172.0.0.1:3306");
         	
-        	conn = dataSource.getConnection();
-        	s = conn.createStatement();*/
         	
         } catch (SQLException e) {
             System.out.println("Connection Error " +e.toString() );
@@ -39,7 +33,7 @@ public class Database {
     }
     
     private Database() throws ClassNotFoundException {
-        this("Mysql@localhost:3306", "root", "root");
+        this("localhost:3306/SWE311", "root", "root");
     }
     
     protected static Database getDatabase() throws ClassNotFoundException{
