@@ -34,7 +34,7 @@ public class Listing {
 		price =p;
 	}
 	public Listing(int pid, int u, String n, String d, String l, String t, int nR, int nB,
-			int a, String o, double p) throws SQLException{
+			int a, String o, double p) throws SQLException, ClassNotFoundException{
 		pID =pid;
 		uID =u;
 		name =n;
@@ -48,7 +48,7 @@ public class Listing {
 		price =p;
 		retrievePic();
 	}
-	public void retrievePic() throws SQLException{
+	public void retrievePic() throws SQLException, ClassNotFoundException{
 		ResultSet r = Controller.getController().getImage(pID);
 		while(r.next()){
 			pic.add((Image) r.getBlob(1));

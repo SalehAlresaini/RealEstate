@@ -1,8 +1,10 @@
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import facade.Controller;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -13,6 +15,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -41,8 +44,9 @@ public class UI extends Application {
 	GridPane profilePane;
 	
 	@Override
-	public void start(final Stage primaryStage) {//throws Exception {
-		
+	public void start(final Stage primaryStage) throws ClassNotFoundException {//throws Exception {
+		//Controller.getController();
+		int pSize =5;
 		// Header Panel
 		GridPane header = new GridPane();
 		header.setAlignment(Pos.TOP_CENTER);
@@ -124,7 +128,11 @@ public class UI extends Application {
 		{
 			public void handle(ActionEvent event){
 				
-				//uID = Controller.getController().login(userField.getText(), passField.getText())
+				try {
+					uID = Controller.getController().login(userField.getText(), passField.getText());
+				} catch (Exception e) {
+					uID =0;
+				}
 				if( uID == 0){
 					loginStatus.setFill(Color.DARKBLUE);
 					loginStatus.setText("user name/ password compination is not correct!");
@@ -188,8 +196,12 @@ public class UI extends Application {
 					registrationStatus.setText("complete the empty fields");
 				}
 				else if(passFieldR.getText().equals(passConfField.getText())){
-					String registerOutput = "Nothing yet";
-						//Controller.getController().register(userFieldR.getText(), passFieldR.getText(), emailField.getText());
+					String registerOutput;
+					try {
+						registerOutput = Controller.getController().register(userFieldR.getText(), passFieldR.getText(), emailField.getText());
+					} catch (Exception e) {
+						registerOutput = "Error: couldn't register";
+					}
 					if(registerOutput.equals("done")){
 						loginStatus.setFill(Color.DARKBLUE);
 						loginStatus.setText("Registration complete, Now login");
@@ -334,13 +346,19 @@ public class UI extends Application {
 				}
 				else{
 					addStatus.setFill(Color.DARKBLUE);
-					if(/*Controler.getController().addList(propField.getText(), propDiscField.getText(), propLocField.getText(),
-							propOfferTypeField.getSelectedToggle().getUserData().toString(), propNRoomsField.getText(),
-							propNBathsField.getText(), propAreaField.getText(),
-							propOfferTypeField.getSelectedToggle().getUserData().toString(), propOfferPriceField.getText(), list)*/true)
+					String addListOut;
+					try {
+						addListOut = Controller.getController().addList(propField.getText(), propDiscField.getText(), propLocField.getText(),
+								propOfferTypeField.getSelectedToggle().getUserData().toString(), Integer.parseInt(propNRoomsField.getText()),
+								Integer.parseInt(propNBathsField.getText()), Integer.parseInt(propAreaField.getText()),
+								propOfferTypeField.getSelectedToggle().getUserData().toString(), Double.parseDouble(propOfferPriceField.getText()), picList);
+					} catch (Exception  e) {
+						addListOut= "Error: couldn't add your List";
+					}
+					if(addListOut.equals("Done"))
 						addStatus.setText("Your Property has been added succesfully");
 					else
-						addStatus.setText("Error:your property couldn't be added");
+						addStatus.setText(addListOut);
 				}
 				
 			}
@@ -376,7 +394,7 @@ public class UI extends Application {
 		profilePane.setPadding(new Insets(25,25,25,25));
 		
 		Text profileTitle = new Text("sorry page not found");
-		profilePane.add(profileTitle, 0, 0);
+		profilePane.add(profileTitle,0,0);
 		
 		//Combine
 		grid = new GridPane();

@@ -21,21 +21,22 @@ public class Controller {
 		uID =0;
 	}
 	
-	public static Controller getController(){
+	public static Controller getController() throws ClassNotFoundException{
+		//Database.getDatabase();
 		return controller;
 	}
 	
-	public  String register( String uName, String pass,String email) throws SQLException {
+	public  String register( String uName, String pass,String email) throws SQLException, ClassNotFoundException {
     	return Database.getDatabase().register(uName, pass, email);
     }
     
-    public int login( String uName, String pass) throws SQLException{
+    public int login( String uName, String pass) throws SQLException, ClassNotFoundException{
     	uID = Database.getDatabase().login(uName, pass);
     	return uID;
     }
     
     public  String addList(String name, String discription, String location,
-    		String type, int nRooms, int nBathrooms, int area, String offer, double price, List<File> pics) throws SQLException{
+    		String type, int nRooms, int nBathrooms, int area, String offer, double price, List<File> pics) throws SQLException, ClassNotFoundException{
     	if(uID ==0){
     		return "you must login to add list";
     	}
@@ -43,15 +44,15 @@ public class Controller {
     			(uID, name, discription, location, type, nRooms, nBathrooms, area, offer, price, pics);
     }
     
-    public Boolean deleteList(int  pID){
+    public Boolean deleteList(int  pID) throws ClassNotFoundException{
     	return Database.getDatabase().deleteList(uID, pID);
     }
     
-    public ResultSet getImage (int pID){
+    public ResultSet getImage (int pID) throws ClassNotFoundException{
     	return Database.getDatabase().getImage(pID);
     }
     
-    public List<Listing> viewList(int pNum, int pSize){
+    /*public List<Listing> viewList(int pNum, int pSize){
     	ResultSet r =Database.getDatabase().viewList(pNum, pSize);
     	List<Listing> view = new ArrayList<Listing>;
     	while(r.next()){
@@ -59,53 +60,53 @@ public class Controller {
     				r.getInt(7), r.getInt(8), r.getString(9), r.getDouble(10)));
     	}
     	return view;
-    }
+    }*/
     
-    public Listing getDitails(int pID){
+    /*public Listing getDitails(int pID){
     	ResultSet r =Database.getDatabase().getDitails(pID);
     	if(r.next())
     		return new Listing(r.getInt(0), r.getInt(1), r.getString(2), r.getString(3), r.getString(4), r.getString(5), r.getInt(6), 
     				r.getInt(7), r.getInt(8), r.getString(9), r.getDouble(10));
     	return null;
-    }
+    }*/
     
-    public Boolean request(int pID){
+    public Boolean request(int pID) throws SQLException, ClassNotFoundException{
     	if(uID==0)
     		return false;
     	return Database.getDatabase().request(uID, pID);
     }
     
-    public Boolean deleteRequest( int pID){
+    public Boolean deleteRequest( int pID) throws ClassNotFoundException{
     	if(uID==0)
     		return false;
     	return Database.getDatabase().deleteRequest(uID, pID);
     }
     
-    public List<Request> requestStatus(){
+    /*public List<Request> requestStatus(){
     	ResultSet r =Database.getDatabase().requestStatus(uID);
     	List<Request> requests= new List<Request>;
     	while(r.next())
     		requests.add(Request(r.getInt(0), r.getInt(1), r.getString(2)));
     	return requests;
-    }
+    }*/
     
-    public ResultSet viewRequests(){
+    /*public ResultSet viewRequests(){
     	ResultSet r =Database.getDatabase().viewRequests(uID);
     	List<Request> requests= new List<Request>;
     	while(r.next())
     		requests.add(Request(r.getInt(0), r.getInt(1), r.getString(2)));
     	return requests;
-    }
+    }*/
     
-    public Boolean pinProperty( int pID){
+    public Boolean pinProperty( int pID) throws ClassNotFoundException{
     	return Database.getDatabase().pinProperty(uID, pID);
     }
     
-    public Boolean unpinProperty(int pID){
+    public Boolean unpinProperty(int pID) throws ClassNotFoundException{
     	return Database.getDatabase().unpinProperty(uID, pID);
     }
     
-    public List<Listing> pinnedProperty(){
+    /*public List<Listing> pinnedProperty(){
     	ResultSet r =Database.getDatabase().pinnedProperty(uID);
     	List<Listing> pinned = new ArrayList<Listing>;
     	while(r.next()){
@@ -113,5 +114,5 @@ public class Controller {
     				r.getInt(7), r.getInt(8), r.getString(9), r.getDouble(10)));
     	}
     	return pinned;
-    }
+    }*/
 }

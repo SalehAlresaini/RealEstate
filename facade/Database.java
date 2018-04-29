@@ -17,22 +17,32 @@ public class Database {
     private Statement s;
     private static Database database ;
 
-    private Database(String server, String uName, String pass) {
+    private Database(String server, String uName, String pass) throws ClassNotFoundException {
         try {
-            String connStr = "jdbc:oracle:thin:@" + server;
-            conn = DriverManager.getConnection(connStr, uName, pass );
+        	Class.forName("com.mysql.jdbc.Driver");  
+            String connStr = "jdbc:mysql://" + server;
+            conn = DriverManager.getConnection(connStr, uName, pass);
             s = conn.createStatement();
+        	/*MysqlDataSource dataSource = new MysqlDataSource();
+        	dataSource.setUser("root");
+        	dataSource.setPassword("root");
+        	dataSource.setServerName("172.0.0.1:3306");
+        	
+        	conn = dataSource.getConnection();
+        	s = conn.createStatement();*/
+        	
         } catch (SQLException e) {
-            System.out.println("Connection Error" );
+            System.out.println("Connection Error " +e.toString() );
             System.exit(0);
         }
+        System.out.println("Connected");
     }
     
-    private Database() {
-        this("172.0.0.1:xe", "root", "root");
+    private Database() throws ClassNotFoundException {
+        this("Mysql@localhost:3306", "root", "root");
     }
     
-    protected static Database getDatabase(){
+    protected static Database getDatabase() throws ClassNotFoundException{
     	if (database == null){
     		database = new Database();
     	}
@@ -103,8 +113,8 @@ public class Database {
     }
     
     protected  String addList(int uID, String name, String discription, String location,
-    		String type, int nRooms, int nBathrooms, int area, String offer, double price, List<File> pics)throws SQLException {
-    	String query = String.format("SELECT uID FROM USER" +
+    	String type, int nRooms, int nBathrooms, int area, String offer, double price, List<File> pics)throws SQLException {
+    		String query = String.format("SELECT uID FROM USER" +
                 "WHERE uID = %d and name = %s ",uID, name);
     	ResultSet r = executeQuery (s, query);
     	if(r.next())
@@ -114,35 +124,65 @@ public class Database {
                 "VALUES( %d, %s, %s, %s, %s, %d, %d, %d, %s, %lf)", uID, name, discription, location, type, nRooms, nBathrooms, area, offer, price);
     	if(!executeUpdate(this.s, update))
     		return "Error: couldn't add your List";
-    	if(!setImage(pics))
-    		return "Error: couldn't uploade your pictures";
-    	return "Done";
+    	r = executeQuery (s, query);
+    	if(r.next()){
+	    	if(!setImage(r.getInt(0), pics))
+	    		return "Error: couldn't uploade your pictures";
+	    	return "Done";
+    	}
+    	return "Error: couldn't add your List";
     }
     
     protected Boolean deleteList(int uID,int  pID){
+    	
     	return true;
     }
     
     protected ResultSet getImage (int pID){
-    	ResultSet r =null;
+    	String query = String.format("SELECT * FROM PROPERTY "+
+    			"WHERE pID = %d",pID);
+        ResultSet r =executeQuery (s, query);
     	return r;
     }
     
-    private Boolean setImage(List<File> pics){
+    private Boolean setImage(int pID, List<File> pics){
+    	if(pics.isEmpty())
+    		return true;
+    	String update =String.format("INSERT INTO REQUESTS (uID, pID, status) ");
+    	for(File pic : pics){
+    		String value = String.format("VALUES( %d, LOAD_FILE('%s'))", pID, pic.toString());
+    		if(!executeUpdate(this.s, update+value)){
+    			return false;
+    		}
+    	}
     	return true;
+    		
     }
     
     protected ResultSet viewList(int pNum, int pSize){
-    	ResultSet r =null;
+    	String query = String.format("SELECT * FROM PROPERTY");
+        ResultSet r =executeQuery (s, query);
     	return r;
     }
     
     protected ResultSet getDitails(int pID){
-    	ResultSet r =null;
+    	String query = String.format("SELECT * FROM PROPERTY "+
+    			"WHERE pID = %d",pID);
+        ResultSet r =executeQuery (s, query);
     	return r;
     }
     
-    protected Boolean request(int uID, int pID){
+    protected Boolean request(int uID, int pID) throws SQLException{
+    	String query = String.format("SELECT uID FROM REQUESTS " +
+                "WHERE uID = %d and pID = %d ",uID, pID);
+    	ResultSet r = executeQuery (s, query);
+    	if(r.next())
+    		return false;
+    	
+    	String update =String.format("INSERT INTO REQUESTS (uID, pID, status) " +
+                "VALUES( %d, %d, %s)", uID, pID, "Pending");
+    	if(!executeUpdate(this.s, update))
+    		return false;
     	return true;
     }
     
@@ -151,12 +191,16 @@ public class Database {
     }
     
     protected ResultSet requestStatus(int uID){
-    	ResultSet r =null;
+    	String query = String.format("SELECT * FROM REQUESTS "+
+    			"WHERE uID = %d",uID);
+        ResultSet r =executeQuery (s, query);
     	return r;
     }
     
     protected ResultSet viewRequests(int uID){
-    	ResultSet r =null;
+    	String query = String.format("SELECT REQUESTS.uID, REQUESTS.pID, REQUESTS.status  FROM REQUESTS join PROPERTY on REQUESTS.pID = PROPERTY.uID "+
+    			"WHERE PROPERTY.uID = %d",uID);
+        ResultSet r =executeQuery (s, query);
     	return r;
     }
     
